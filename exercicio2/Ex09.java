@@ -37,7 +37,7 @@ public class Ex08
         }
         else
         {
-            System.println.out("Essa medidas nao formam um triangulo!");
+            System.out.println("Essa medidas nao formam um triangulo!");
         }
         
 
