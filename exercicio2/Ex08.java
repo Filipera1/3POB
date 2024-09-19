@@ -8,6 +8,8 @@ public class Ex08
     {
         Scanner leia = new Scanner(System.in);
 
+        double desconto;
+
         System.out.print("Digite o codigo do produto: ");
         int cod = leia.nextInt();
 
@@ -22,7 +24,7 @@ public class Ex08
 
         switch(formaPagamento)
         {
-            case 1: double desconto = 0.1; 
+            case 1: desconto = 0.1; 
                     break;
 
             case 2: desconto = 0.02;
@@ -35,17 +37,17 @@ public class Ex08
                     break;
 
             default: System.out.print("Opcao invalida!");
-                    break;
+                    return;
         }
 
         double valorTotal = quant * preco * (1 - desconto);
-
+        
         System.out.println("Total a pagar: " + valorTotal + " reais");
         System.out.println("Desconto: " + desconto);
-        
 
         leia.close();
     }
 }
 
-/* 8.  Faça um programa que leia o código, a quantidade, o preço unitário e a forma de pagamento (1 - Dinheiro, 2 - Cheque, 3 - Cartão débito, 4 - Cartão crédito) de um produto. Pagamentos em dinheiro recebem um desconto de 10%, em cartão de débito 5%, em cartão de crédito 3%  e em cheque 2%. O programa deve informar o valor do desconto e o valor final a pagar. */
+/* 8.  Faça um programa que leia o código, a quantidade, o preço unitário e a forma de pagamento (1 - Dinheiro, 2 - Cheque, 3 - Cartão débito, 4 - Cartão crédito) de um produto.
+Pagamentos em dinheiro recebem um desconto de 10%, em cartão de débito 5%, em cartão de crédito 3%  e em cheque 2%. O programa deve informar o valor do desconto e o valor final a pagar. */
