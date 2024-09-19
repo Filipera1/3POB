@@ -1,4 +1,4 @@
-package exercicio2;
+package exercicio_02;
 
 import java.util.Scanner;
 
@@ -14,14 +14,12 @@ public class Ex04
         System.out.print("Digite o sexo do empregado: ");
         String sexo = leia.nextLine();
 
-        sexo.toUpperCase();
-
         System.out.print("Digite o salario bruto do empregado: ");
         double salarioBruto = leia.nextDouble();
 
         double desconto;
 
-        if(sexo == "MASCULINO" || sexo == "M")
+        if(sexo.equals("MASCULINO") || sexo.equals("M"))
         {
             desconto = salarioBruto * (0.05);
         }
