@@ -1,4 +1,4 @@
-package ProjetoAv2.model;
+package model;
 
 public interface Desenvolve{
 

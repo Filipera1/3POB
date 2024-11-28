@@ -1,4 +1,4 @@
-package POB.ProjetoAv2.Model;
+package ProjetoAv2.model;
 
 public interface Gerencia {
 
