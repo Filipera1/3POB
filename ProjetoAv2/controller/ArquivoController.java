@@ -1,63 +1,108 @@
 package controller;
 
-import model.*;
-
 import java.io.*;
 import java.util.ArrayList;
 
 public class ArquivoController {
-    private static final String caminhoArquivo = "funcionarios.txt";
-    
-    public ArrayList<Funcionario> carregarFuncionarios() {
+
+    private static final String arquivoFuncionarios = "funcionarios.txt";
+
+    // Método para ler os dados do arquivo e retornar uma lista de funcionários
+    public static ArrayList<Funcionario> lerArquivo() {
         ArrayList<Funcionario> funcionarios = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(caminhoArquivo))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivoFuncionarios))) {
             String linha;
-            while ((linha = br.readLine()) != null) {
-                String[] partes = linha.split(";");
-                if (partes.length == 4) { 
-                    int id = Integer.parseInt(partes[0]);
-                    String tipo = partes[1];
-                    String nome = partes[2];
-                    double salario = Double.parseDouble(partes[3]);
+            while ((linha = reader.readLine()) != null) {
+                // Dividir a linha por ponto e vírgula (;)
+                String[] dados = linha.split(";");
+                if (dados.length == 4) {
+                    int id = Integer.parseInt(dados[0]);
+                    String tipo = dados[1];
+                    String nome = dados[2];
+                    double salario = Double.parseDouble(dados[3]);
 
-                    Funcionario funcionario = criarFuncionario(tipo, nome, salario);
+                    // Criar objeto Funcionario baseado no tipo
+                    Funcionario funcionario = null;
+                    switch (tipo) {
+                        case "Desenvolvedor":
+                            funcionario = new Desenvolvedor(nome, salario);
+                            break;
+                        case "Gerente":
+                            funcionario = new Gerente(nome, salario);
+                            break;
+                        case "Treinador":
+                            funcionario = new Treinador(nome, salario);
+                            break;
+                        case "GerenteDesenvolvedor":
+                            funcionario = new GerenteDesenvolvedor(nome, salario);
+                            break;
+                    }
+
                     if (funcionario != null) {
-                        funcionario.setId(id);
+                        funcionario.setId(id); // Define o ID (caso seja necessário)
                         funcionarios.add(funcionario);
                     }
                 }
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Arquivo não encontrado. Iniciando com lista vazia.");
         } catch (IOException e) {
-            System.out.println("Erro ao ler o arquivo: " + e.getMessage());
+            e.printStackTrace();
         }
-
         return funcionarios;
     }
 
-    public void salvarFuncionarios(ArrayList<Funcionario> funcionarios) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(caminhoArquivo))) {
+    // Método para escrever todos os funcionários no arquivo
+    public static void escreverArquivo(ArrayList<Funcionario> funcionarios) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivoFuncionarios))) {
             for (Funcionario funcionario : funcionarios) {
-                String linha = funcionario.getId() + ";" + funcionario.getClass().getSimpleName() + ";" +
-                               funcionario.getNome() + ";" + funcionario.getSalario();
-                bw.write(linha);
-                bw.newLine();
+                // Escrever as informações do funcionário no arquivo
+                writer.write(funcionarioToString(funcionario));
+                writer.newLine();
             }
         } catch (IOException e) {
-            System.out.println("Erro ao salvar os funcionários: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private Funcionario criarFuncionario(String tipo, String nome, double salario) {
-        return switch (tipo) {
-            case "Desenvolvedor" -> new Desenvolvedor(nome, salario);
-            case "Gerente" -> new Gerente(nome, salario);
-            case "Treinador" -> new Treinador(nome, salario);
-            case "GerenteDesenvolvedor" -> new GerenteDesenvolvedor(nome, salario);
-            default -> null;
-        };
+    // Método para adicionar um novo funcionário ao arquivo
+    public static void adicionarFuncionario(Funcionario funcionario) {
+        ArrayList<Funcionario> funcionarios = lerArquivo();
+        funcionarios.add(funcionario);  // Adiciona o novo funcionário na lista
+        escreverArquivo(funcionarios);  // Reescreve o arquivo com todos os funcionários
+    }
+
+    // Método para atualizar um funcionário no arquivo
+    public static void atualizarFuncionario(int id, Funcionario funcionarioAtualizado) {
+        ArrayList<Funcionario> funcionarios = lerArquivo();
+        for (int i = 0; i < funcionarios.size(); i++) {
+            Funcionario funcionario = funcionarios.get(i);
+            if (funcionario.getId() == id) {
+                funcionarios.set(i, funcionarioAtualizado);  // Atualiza o funcionário
+                escreverArquivo(funcionarios);  // Reescreve o arquivo com a lista atualizada
+                return;
+            }
+        }
+    }
+
+    // Método para remover um funcionário do arquivo
+    public static void removerFuncionario(int id) {
+        ArrayList<Funcionario> funcionarios = lerArquivo();
+        funcionarios.removeIf(funcionario -> funcionario.getId() == id);  // Remove o funcionário
+        escreverArquivo(funcionarios);  // Reescreve o arquivo sem o funcionário excluído
+    }
+
+    // Método para converter o objeto Funcionario para uma linha no formato adequado
+    private static String funcionarioToString(Funcionario funcionario) {
+        String tipo = "";
+        if (funcionario instanceof Desenvolvedor) {
+            tipo = "Desenvolvedor";
+        } else if (funcionario instanceof Gerente) {
+            tipo = "Gerente";
+        } else if (funcionario instanceof Treinador) {
+            tipo = "Treinador";
+        } else if (funcionario instanceof GerenteDesenvolvedor) {
+            tipo = "GerenteDesenvolvedor";
+        }
+
+        return funcionario.getId() + ";" + tipo + ";" + funcionario.getNome() + ";" + funcionario.getSalario();
     }
 }
-
